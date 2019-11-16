@@ -13,25 +13,42 @@ namespace Database {
     }
 
     [System.Serializable]
-    class ShipLoadData : DatabaseItem {
-        public List<ShipData> ships;
+    class StaticShipLoadData : DatabaseItem {
+        public List<StaticShipData> ships;
     }
 
     [System.Serializable]
-    public class ShipData : DatabaseItem {
+    public class StaticShipData : DatabaseItem {
         public string shipName;
         public int numRooms;
-        public List<ShipRooms> rooms;
+        public List<StaticShipRooms> rooms;
+        public StaticShipLayout shipLayout;
     }
 
     [System.Serializable]
-    public class ShipRooms : DatabaseItem {
-        List<RoomDimension> roomDims;
+    public class StaticShipRooms : DatabaseItem {
+        List<StaticRoomDimension> roomDims;
     }
 
     [System.Serializable]
-    public class RoomDimension : DatabaseItem {
+    public class StaticRoomDimension : DatabaseItem {
         int width;
         int height;
+    }
+
+    [System.Serializable]
+    public class StaticShipLayout : DatabaseItem {
+        int scienceModules;
+        int weaponModules;
+        int engineerModules;
+    }
+
+    [System.Serializable]
+    public class StaticTypeIDMap : DatabaseItem {
+        public Dictionary<string, int> typeIDMap;
+
+        public int getTypeIDFromString(string typeName) {
+            return this.typeIDMap[typeName];
+        }
     }
 }

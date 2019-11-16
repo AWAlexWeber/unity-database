@@ -8,6 +8,7 @@ namespace Database {
     // This function is the function that will load all of our static data from the jsons files in the Database folder
     public class DatabaseLoad : MonoBehaviour
     {
+        public string typeIDMapTypeID = "1";
         public string databasePath = "/Database/";
         public string bootstrapName = "bootstrap.json";
 
@@ -16,7 +17,7 @@ namespace Database {
             Dictionary<string, DatabaseEntry> persistData = this.loadStart();
         
             // Completed loading, creating our PersistDatabase and loading to the menu screen
-            // this.buildPersistDatabase();
+            this.buildPersistDatabase(persistData);
 
             // Transitioning to main menu screen
             this.loadEnd();
@@ -59,18 +60,28 @@ namespace Database {
 
                 // Loading the ship JSON
                 if (path.Equals("ship.json")) {
-                    ShipLoadData shipData = JsonUtility.FromJson<ShipLoadData>(this.readFromFile(databasePath + path));
+                    StaticShipLoadData shipData = JsonUtility.FromJson<StaticShipLoadData>(this.readFromFile(databasePath + path));
                     DatabaseEntry shipDataEntry = new DatabaseEntry(shipData, shipData.GetType());
                     outputDictionary.Add(shipData.getTypeID().ToString(), shipDataEntry);
                     
-                    foreach (ShipData std in shipData.ships) {
+                    foreach (StaticShipData std in shipData.ships) {
                         DatabaseEntry localShipData = new DatabaseEntry(std, std.GetType());
                         outputDictionary.Add(std.getTypeID().ToString(), localShipData);
                     }
                 }
+
+                if (path.Equals("typeID.json")) {
+                    StaticTypeIDMap typeData = JsonUtility.FromJson<StaticTypeIDMap>(this.readFromFile(databasePath + path));
+                    DatabaseEntry typeDataEntry = new DatabaseEntry(typeData, typeData.GetType());
+                    outputDictionary.Add(typeData.getTypeID().ToString(), typeDataEntry);
+                }
             }
 
             return outputDictionary;
+        }
+
+        private void buildPersistDatabase(Dictionary<string, DatabaseEntry> inputDictionary) {
+            PersistDatabase database = new PersistDatabase(inputDictionary, (Database.StaticTypeIDMap)inputDictionary[typeIDMapTypeID].getObject());
         }
 
         private System.Type getTypeFromString(string input) {
